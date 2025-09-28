@@ -28,8 +28,8 @@ for (const file of files) {
   // auth.routes.js        -> /api/auth
   // kpiUpdate.routes.js   -> /api/kpi-update  (camelCase -> kebab)
   const nameRaw = basename(file, ".routes.js").replace(".routes", "");
- 
-  const prefix = nameRaw;
+  const prefix = nameRaw.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+
   const mountPath = `/api/${prefix}`;
   router.use(mountPath, mod.default);
   console.log(`✓ Mounted ${file} at ${mountPath}`);
