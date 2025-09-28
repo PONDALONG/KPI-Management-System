@@ -1,6 +1,42 @@
 
 import mongoose from "mongoose";
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required: [username, email, role]
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: Mongo ObjectId
+ *           example: "66f4b9f0b9a01234567890ab"
+ *         username:
+ *           type: string
+ *           example: "alice_01"
+ *         name:
+ *           type: string
+ *           nullable: true
+ *           example: "Alice Johnson"
+ *         email:
+ *           type: string
+ *           format: email
+ *           example: "alice@example.com"
+ *         role:
+ *           type: string
+ *           description: Role ObjectId
+ *           example: "66f4b9f0b9a01234567890ff"
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ */
+
+
 const userSchema = new mongoose.Schema(
   {
     // ✅ ใช้เป็นคีย์หลักที่ controller อ้างถึง

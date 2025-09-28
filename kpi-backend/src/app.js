@@ -38,7 +38,7 @@ const swaggerOptions = {
   },
   
   // ปรับ path ให้ตรงกับโครงของคุณ
-  apis: ["./src/routes/**/*.js"],
+  apis: ["./src/routes/**/*.js", "./src/models/**/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
