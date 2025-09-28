@@ -1,0 +1,612 @@
+:root {
+  --bg: #0f172a;
+  --card: #0b1224;
+  --muted: #93a4c4;
+  --text: #e6ecff;
+  --line: #1e2a4a;
+  --brand: #6ea8fe;
+  --brand2: #9b8cff;
+  --ok: #36d399;
+  --warn: #fbbf24;
+  --err: #fb7185;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: radial-gradient(
+      1000px 600px at 10% -20%,
+      rgba(110, 168, 254, 0.15),
+      transparent 60%
+    ),
+    radial-gradient(
+      800px 500px at 90% -10%,
+      rgba(155, 140, 255, 0.12),
+      transparent 60%
+    ),
+    var(--bg);
+  color: var(--text);
+}
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+.h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 18px;
+}
+.card {
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.02),
+      transparent 60%
+    ),
+    var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.row {
+  display: grid;
+  gap: 12px;
+}
+@media (min-width: 780px) {
+  .row.two {
+    grid-template-columns: 1fr 1fr;
+  }
+  .row.four {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #0b1120;
+  color: var(--text);
+  border-radius: 12px;
+  padding: 10px 12px;
+  outline: none;
+}
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgba(110, 168, 254, 0.18);
+}
+.label {
+  font-weight: 600;
+  margin: 4px 0 6px;
+  color: #cbd7ff;
+}
+.btn {
+  border: 1px solid var(--line);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0)
+  );
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn:hover {
+  transform: translateY(-1px);
+  border-color: #2e3a60;
+}
+.btn.primary {
+  background: linear-gradient(90deg, var(--brand), var(--brand2));
+  border: none;
+  box-shadow: 0 8px 20px rgba(110, 168, 254, 0.35);
+}
+
+.table-wrap {
+  overflow: auto;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.table thead th {
+  text-align: left;
+  padding: 12px;
+  color: #cbd7ff;
+  background: rgba(255, 255, 255, 0.03);
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.table tbody td {
+  padding: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  border: 1px solid transparent;
+}
+.badge.on {
+  background: rgba(54, 211, 153, 0.15);
+  color: #affad8;
+  border-color: #2e7e6a;
+}
+.badge.risk {
+  background: rgba(251, 191, 36, 0.14);
+  color: #ffe8a3;
+  border-color: #7e6120;
+}
+.badge.off {
+  background: rgba(251, 113, 133, 0.16);
+  color: #ffd1d9;
+  border-color: #7e2a38;
+}
+.progress {
+  height: 8px;
+  background: #0c1330;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.progress > div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brand), var(--brand2));
+}
+.stats {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+@media (min-width: 780px) {
+  .stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.stat .k {
+  color: var(--muted);
+  font-size: 12px;
+}
+.stat .v {
+  font-weight: 800;
+  font-size: 24px;
+}
+.mt12 {
+  margin-top: 12px;
+}
+.mt20 {
+  margin-top: 20px;
+}
+.nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.nav a {
+  color: #cbd7ff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+.nav a.active {
+  background: rgba(255, 255, 255, 0.05);
+}
+/* ====== Shell Layout (Navbar + Sidebar) ====== */
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-areas:
+    "navbar navbar"
+    "sidebar main";
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: 56px 1fr;
+}
+.shell:not(.has-sidebar) {
+  grid-template-columns: 0 1fr;
+}
+
+.nav-top {
+  grid-area: navbar;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 14px 0 10px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent),
+    var(--card);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+.icon-btn {
+  border: 1px solid var(--line);
+  background: #0b1120;
+  color: var(--text);
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.brand {
+  color: #e6ecff;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+.brand span {
+  background: linear-gradient(90deg, var(--brand), var(--brand2));
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.role-badge {
+  font-size: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: #cbd7ff;
+}
+.me {
+  color: #cbd7ff;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  width: 260px;
+  overflow: auto;
+  border-right: 1px solid var(--line);
+  background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.02),
+      transparent 60%
+    ),
+    var(--card);
+  transition: width 0.2s ease;
+}
+.sidebar:not(.open) {
+  width: 0;
+  border-right: 0;
+}
+.side-nav {
+  padding: 12px;
+}
+.side-section {
+  margin: 14px 10px 6px;
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+}
+.side-link {
+  display: block;
+  color: #cbd7ff;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+}
+.side-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.side-link.active {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--line);
+}
+.side-footer {
+  padding: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.main {
+  grid-area: main;
+  padding: 18px;
+  min-width: 0;
+}
+
+/* Buttons (ขนาดเล็กบน navbar) */
+.btn.small {
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.btn.small.ghost {
+  background: transparent;
+}
+/* === Light theme overrides (append to the end of your CSS) === */
+:root {
+  --bg: #ffffff;
+  --card: #ffffff;
+  --text: #111827; /* slate-900 */
+  --muted: #6b7280; /* slate-500 */
+  --line: #e5e7eb; /* slate-200 */
+  --brand: #4f46e5; /* indigo-600 */
+  --brand2: #9333ea; /* purple-600 */
+  --ok: #16a34a; /* green-600 */
+  --warn: #f59e0b; /* amber-500 */
+  --err: #ef4444; /* red-500 */
+}
+
+/* page background -> pure white */
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* cards / panels / navbar / sidebar -> white with subtle shadow */
+.card,
+.nav-top,
+.sidebar {
+  background: var(--card) !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* texts/links in light mode */
+.brand {
+  color: var(--text) !important;
+}
+.nav a {
+  color: #374151 !important;
+} /* slate-700 */
+.nav a.active {
+  background: #eef2ff !important;
+  border-color: var(--line) !important;
+} /* indigo-50 */
+
+/* inputs/selects/textarea -> white */
+.input,
+.select,
+.textarea {
+  background: #ffffff !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
+}
+.input:focus,
+.select:focus,
+.textarea:focus {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important; /* brand ring */
+}
+
+/* icon small button (hamburger) */
+.icon-btn {
+  background: #fff !important;
+  color: var(--text) !important;
+  border-color: var(--line) !important;
+}
+
+/* sidebar links */
+.side-link {
+  color: #374151 !important;
+} /* slate-700 */
+.side-link:hover {
+  background: #f3f4f6 !important;
+} /* slate-100 */
+.side-link.active {
+  background: #eef2ff !important;
+} /* indigo-50 */
+.side-section {
+  color: #6b7280 !important;
+}
+
+/* table */
+.table thead th {
+  background: #f9fafb !important; /* gray-50 */
+  color: #374151 !important;
+  border-bottom-color: var(--line) !important;
+}
+.table tbody td {
+  border-bottom-color: var(--line) !important;
+}
+.table tbody tr:hover {
+  background: #f9fafb !important;
+}
+
+/* progress bg a bit lighter */
+.progress {
+  background: #f3f4f6 !important;
+  border-color: var(--line) !important;
+}
+
+/* stats text */
+.stat .k {
+  color: #6b7280 !important;
+}
+
+/* role badge */
+.role-badge {
+  color: #374151 !important;
+  border-color: var(--line) !important;
+}
+
+/* top bar area */
+.shell {
+  background: var(--bg) !important;
+}
+/* === Form polish & layout helpers === */
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.label {
+  font-weight: 600;
+  margin: 2px 0 6px;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: .2px;
+}
+
+.input,
+.select,
+.textarea {
+  height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background-clip: padding-box; /* ลด ring overflow */
+}
+
+.textarea {
+  height: auto;
+  min-height: 90px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(148, 163, 184, .7); /* slate-400-ish */
+}
+
+.input:disabled,
+.select:disabled,
+.textarea:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+/* Invalid / error state (ใส่ class .invalid ที่ input เมื่อ validate ไม่ผ่าน) */
+.input.invalid,
+.select.invalid,
+.textarea.invalid {
+  border-color: var(--err);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, .12);
+}
+
+/* Hint & Error text (เผื่อใช้งานในอนาคต) */
+.hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.error-text {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--err);
+}
+
+/* Select arrow ให้คมขึ้นทุกโทน */
+.select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%),
+    linear-gradient(to right, transparent, transparent);
+  background-position:
+    calc(100% - 18px) calc(50% - 4px),
+    calc(100% - 12px) calc(50% - 4px),
+    calc(100% - 2.2em) 0.45em;
+  background-size: 6px 6px, 6px 6px, 1px 1.8em;
+  background-repeat: no-repeat;
+}
+
+/* Card padding และเงานุ่มขึ้นเล็กน้อย */
+.card {
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 8px 26px rgba(0,0,0,.12);
+}
+
+/* ปุ่มสวยขึ้น + states ครบ */
+.btn {
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
+.btn:active {
+  transform: translateY(0);
+}
+.btn[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+.btn.primary {
+  background: linear-gradient(90deg, var(--brand), var(--brand2));
+  border: none;
+  box-shadow: 0 10px 22px rgba(110,168,254,.28);
+}
+.btn.primary:hover {
+  box-shadow: 0 12px 26px rgba(110,168,254,.34);
+}
+
+/* ให้แถวปุ่ม/ส่วนยาว ๆ กินเต็มความกว้างแค่ที่จำเป็น */
+@media (min-width: 780px) {
+  .row.two > .col-span-2,
+  .row.two > .full,
+  .row.two > .form-actions {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ฟิลด์ยาว (เช่น Description) ใช้ .full ใน JSX ได้ */
+.full {
+  grid-column: 1 / -1;
+}
+
+/* ปรับ table hover ให้บางลงใน light mode */
+.table tbody tr:hover {
+  transition: background .12s ease;
+}
+
+/* Date input ให้ตัวอักษรตรงกลางและเท่ากันทุกเบราว์เซอร์ */
+input[type="date"] {
+  line-height: normal;
+}
+
+/* ปรับ max width container ให้ไหลลื่นบนจอกว้าง */
+.container {
+  max-width: 1120px;
+}
+
+/* เพิ่ม contrast บน Light mode สำหรับ label/placeholder */
+@media (prefers-color-scheme: light) {
+  .label { color: #6b7280; }
+  .input::placeholder, .textarea::placeholder { color: #9ca3af; }
+}
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end; /* ปุ่มไปชิดขวา */
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.form-actions .btn {
+  flex: 1;              /* ให้ทั้งคู่กว้างเท่ากัน */
+  height: 44px;         /* ความสูงพอดีกับ input */
+  border-radius: 10px;
+  font-weight: 600;
+}

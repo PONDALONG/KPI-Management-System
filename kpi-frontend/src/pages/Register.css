@@ -1,0 +1,167 @@
+/* ====== Layout & Card ====== */
+.register-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: #f7f7fb;
+  padding: 24px;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 12px 32px rgba(17, 24, 39, 0.06);
+}
+
+/* ====== Heading ====== */
+.register-heading {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: #010a1f;
+  margin-bottom: 18px;
+}
+
+/* ====== Form & Fields ====== */
+.register-form {
+  display: grid;
+  gap: 14px;
+}
+
+.field-label {
+  margin-bottom: 6px;
+  display: block;
+  color: #111827;
+  font-weight: 600;
+}
+
+.field-hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+
+.field-error {
+  font-size: 12px;
+  color: #b91c1c;
+  margin-top: 4px;
+}
+
+/* ====== Inputs ====== */
+.input {
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #e9f0ff;
+  padding: 0 14px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.input:focus {
+  border-color: #6366f1;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+}
+
+/* error state (ถ้าคุณเติม class นี้จาก JS) */
+.input.is-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  background: #fff5f5;
+}
+
+/* ====== Password toggle ====== */
+.password-wrapper {
+  position: relative;
+}
+
+.btn-toggle {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background .2s ease, box-shadow .2s ease, transform .1s ease;
+}
+
+.btn-toggle:hover {
+  background: #f3f4f6;
+}
+
+.btn-toggle:active {
+  transform: translateY(1px);
+}
+
+/* ====== Primary Button (match หน้า Login) ====== */
+.primary-btn {
+  height: 46px;
+  border-radius: 10px;
+  width: 100%;
+  border: 0;
+  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: .2px;
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(99, 102, 241, 0.25);
+  transition: transform .15s ease, box-shadow .15s ease, opacity .2s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 22px rgba(99, 102, 241, 0.32);
+}
+
+.primary-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 14px rgba(99, 102, 241, 0.24);
+}
+
+.primary-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 10px 18px rgba(99, 102, 241, 0.18);
+}
+
+/* ====== Footer Link ====== */
+.foot-note {
+  text-align: center;
+  margin-top: 6px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.link {
+  text-decoration: underline;
+  color: #6d28d9;
+}
+
+.link:hover {
+  color: #5b21b6;
+}
+
+/* ====== Form-level alert ====== */
+.alert-error {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.28);
+  color: #b91c1c;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  font-size: 14px;
+}
