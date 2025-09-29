@@ -25,8 +25,8 @@ function computeStatus(actual, target) {
   const pct = (a / t) * 100;
 
   if (pct <= 15) return "Off Track"; // ≤15%
-  if (pct < 70) return "At Risk";    // 16–69%
-  return "On Track";                 // ≥70%
+  if (pct < 70) return "At Risk"; // 16–69%
+  return "On Track"; // ≥70%
 }
 
 // --- helpers ---
@@ -166,7 +166,10 @@ export default function Dashboard() {
   const filtered = useMemo(() => {
     return (kpis || []).filter((k) => {
       const assignedId = uid(
-        k?.assignedUser?._id ?? k?.assignedUser?.id ?? k?.userId ?? k?.assignedUser
+        k?.assignedUser?._id ??
+          k?.assignedUser?.id ??
+          k?.userId ??
+          k?.assignedUser
       );
       const matchesUser = !userId || assignedId === uid(userId);
       const derivedStatus = computeStatus(k.actualValue, k.targetValue);
@@ -194,78 +197,65 @@ export default function Dashboard() {
     }
   };
 
-  // ส่งอัปเดต (user)
-  const submitUpdate = async (e) => {
-    e.preventDefault();
-    if (!editingKpi) return;
+  // ส่งอัปเดต (user) — แก้เฉพาะจุดที่ผิด: ตัด PATCH/PUT ที่ทำให้ 404 ออก
+ // ส่งอัปเดต (user) — เพิ่ม PUT /kpis/:id เพื่อให้อัปเดต Actual จริง
+const submitUpdate = async (e) => {
+  e.preventDefault();
+  if (!editingKpi) return;
 
-    const kpiId = uid(editingKpi._id || editingKpi.id);
-    const delta = Number(updatedValue);
-    if (!Number.isFinite(delta)) {
-      alert("กรุณากรอก Updated Value เป็นตัวเลข");
-      return;
+  const kpiId = uid(editingKpi._id || editingKpi.id);
+  const delta = Number(updatedValue);
+  if (!Number.isFinite(delta)) {
+    alert("กรุณากรอก Updated Value เป็นตัวเลข");
+    return;
+  }
+
+  try {
+    // 1) บันทึกบรรทัด update (ฝั่ง backend จะเก็บประวัติ)
+    await api.post(`/kpi-update/${kpiId}/updates`, {
+      updatedValue: delta,
+      comment: comment?.trim() || "",
+    });
+
+    // 2) คำนวณค่าใหม่จากของเดิมใน state (ไม่เรียก GET /kpis/:id)
+    const latest = editingKpi;
+    const currentActual = Number(latest.actualValue) || 0;
+    const target = Number(latest.targetValue) || 0;
+    const newActual = currentActual + delta;
+    const newStatus = computeStatus(newActual, target);
+
+    // 3) อัปเดต KPI หลักด้วย PUT (หลีกเลี่ยง PATCH ที่เคย 404)
+    const payload = {
+      ...latest,
+      actualValue: newActual,
+      status: newStatus,
+      // บาง backend ต้องการ assignedUser เป็น id string
+      assignedUser:
+        typeof latest.assignedUser === "object"
+          ? (latest.assignedUser?._id || latest.assignedUser?.id || latest.assignedUser)
+          : latest.assignedUser,
+    };
+    await api.put(`/kpis/${kpiId}`, payload);
+
+    // 4) อัปเดต UI + ปิดฟอร์ม
+    setKpis((prev) =>
+      prev.map((k) =>
+        uid(k._id || k.id) === kpiId ? { ...k, actualValue: newActual, status: newStatus } : k
+      )
+    );
+    onSelectForUpdate(null);
+
+    // 5) reload เพื่อความชัวร์ และรีโหลดแผง updates ถ้ากำลังเปิดของ KPI นี้อยู่
+    await load();
+    if (isAdminFlag && adminViewKpi && uid(adminViewKpi._id || adminViewKpi.id) === kpiId) {
+      await fetchUpdatesForAdmin(adminViewKpi);
     }
+  } catch (err) {
+    console.error("Update KPI failed:", err);
+    alert(err?.response?.data?.message || "อัปเดตไม่สำเร็จ");
+  }
+};
 
-    try {
-      // 1) บันทึก update
-      await api.post(`/kpis/${kpiId}/updates`, {
-        updatedValue: delta,
-        comment: comment?.trim() || "",
-      });
-
-      // 2) ดึง KPI ล่าสุด
-      const latest = (await api.get(`/kpis/${kpiId}`)).data || editingKpi;
-
-      // 3) คำนวณค่าใหม่
-      const currentActual = Number(latest.actualValue) || 0;
-      const target = Number(latest.targetValue) || 0;
-      const newActual = currentActual + delta;
-      const newStatus = computeStatus(newActual, target);
-
-      // 4) อัปเดต KPI
-      try {
-        await api.patch(`/kpis/${kpiId}`, { actualValue: newActual, status: newStatus });
-      } catch {
-        const payload = {
-          ...latest,
-          actualValue: newActual,
-          status: newStatus,
-          assignedUser:
-            typeof latest.assignedUser === "object"
-              ? (latest.assignedUser?._id ||
-                  latest.assignedUser?.id ||
-                  latest.assignedUser)
-              : latest.assignedUser,
-        };
-        await api.put(`/kpis/${kpiId}`, payload);
-      }
-
-      // 5) อัปเดต UI
-      setKpis((prev) =>
-        prev.map((k) =>
-          uid(k._id || k.id) === kpiId
-            ? { ...k, actualValue: newActual, status: newStatus }
-            : k
-        )
-      );
-      setEditingKpi((curr) =>
-        curr && uid(curr._id || curr.id) === kpiId
-          ? { ...curr, actualValue: newActual, status: newStatus }
-          : curr
-      );
-
-      // 6) reload + ปิดฟอร์ม
-      await load();
-      onSelectForUpdate(null);
-
-      if (isAdminFlag && adminViewKpi && uid(adminViewKpi._id || adminViewKpi.id) === kpiId) {
-        await fetchUpdatesForAdmin(adminViewKpi);
-      }
-    } catch (err) {
-      console.error("Update KPI failed:", err);
-      alert(err?.response?.data?.message || "อัปเดตไม่สำเร็จ");
-    }
-  };
 
   // เปิด/โหลด Updates (admin)
   const onViewUpdates = async (kpiItem) => {
@@ -277,7 +267,8 @@ export default function Dashboard() {
     const kpiId = uid(kpiItem._id || kpiItem.id);
     setLoadingUpdates(true);
     try {
-      const { data } = await api.get(`/kpis/${kpiId}/updates`);
+      // const { data } = await api.get(`/kpis/${kpiId}/updates`);
+      const { data } = await api.get(`/kpi-update/${kpiId}/updates`);
       setAdminUpdates(Array.isArray(data) ? data : []);
     } catch (e) {
       console.error(e);
@@ -335,7 +326,13 @@ export default function Dashboard() {
           <QuickStats items={filtered} />
           <KPICharts items={filtered} activeStatus={status || "All"} />
 
-          <div style={{ textAlign: "center", margin: "14px 0 8px", color: "#6b7280" }}>
+          <div
+            style={{
+              textAlign: "center",
+              margin: "14px 0 8px",
+              color: "#6b7280",
+            }}
+          >
             <b>Achieved KPIs:</b> {achievedPctText}
           </div>
         </>
@@ -351,7 +348,9 @@ export default function Dashboard() {
         totalItems={filtered.length}
         showEditDelete={isAdminFlag}
         showUpdateButton={!isAdminFlag}
-        onSelectForUpdate={!isAdminFlag ? (v) => onSelectForUpdate(v) : undefined}
+        onSelectForUpdate={
+          !isAdminFlag ? (v) => onSelectForUpdate(v) : undefined
+        }
         editingKpiId={editingKpi ? uid(editingKpi._id || editingKpi.id) : null}
         showViewUpdatesButton={isAdminFlag}
         onViewUpdates={isAdminFlag ? onViewUpdates : undefined}
@@ -361,13 +360,19 @@ export default function Dashboard() {
 
       {/* ฟอร์มอัปเดต (user เท่านั้น) */}
       {!isAdminFlag && editingKpi && (
-        <form onSubmit={submitUpdate} className="card" style={{ marginTop: 16 }}>
+        <form
+          onSubmit={submitUpdate}
+          className="card"
+          style={{ marginTop: 16 }}
+        >
           <div style={{ marginBottom: 8, fontWeight: 600 }}>
             อัปเดต KPI: {editingKpi.title || editingKpi.name}
           </div>
 
           <div style={{ marginBottom: 12 }}>
-            <label style={{ display: "block", marginBottom: 4 }}>Updated Value</label>
+            <label style={{ display: "block", marginBottom: 4 }}>
+              Updated Value
+            </label>
             <input
               type="number"
               step="any"
@@ -391,8 +396,14 @@ export default function Dashboard() {
           </div>
 
           <div style={{ display: "flex", gap: 8 }}>
-            <button type="submit" className="btn btn-primary">อัปเดต KPI</button>
-            <button type="button" className="btn btn-secondary" onClick={() => onSelectForUpdate(null)}>
+            <button type="submit" className="btn btn-primary">
+              อัปเดต KPI
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => onSelectForUpdate(null)}
+            >
               ยกเลิก
             </button>
           </div>
@@ -402,14 +413,27 @@ export default function Dashboard() {
       {/* แผง Updates (admin เท่านั้น) — ไม่มีคอลัมน์ Action และ By ใช้ name */}
       {isAdminFlag && adminViewKpi && (
         <div className="card" style={{ marginTop: 16 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 8,
+            }}
+          >
             <div style={{ fontWeight: 600 }}>
               Updates for: {adminViewKpi.title || adminViewKpi.name}{" "}
               <span style={{ color: "#6b7280" }}>
                 (Actual: {Number(adminViewKpi.actualValue || 0).toFixed(2)})
               </span>
             </div>
-            <button className="btn small" onClick={() => { setAdminViewKpi(null); setAdminUpdates([]); }}>
+            <button
+              className="btn small"
+              onClick={() => {
+                setAdminViewKpi(null);
+                setAdminUpdates([]);
+              }}
+            >
               ปิด
             </button>
           </div>
@@ -438,7 +462,11 @@ export default function Dashboard() {
                       <td>{u.comment || "-"}</td>
                       {/* ✅ แสดงชื่อจริงของผู้ใช้ */}
                       <td>{resolveUserName(u.updatedBy, userMap)}</td>
-                      <td>{new Date(u.updatedAt || u.createdAt).toLocaleString("th-TH")}</td>
+                      <td>
+                        {new Date(u.updatedAt || u.createdAt).toLocaleString(
+                          "th-TH"
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

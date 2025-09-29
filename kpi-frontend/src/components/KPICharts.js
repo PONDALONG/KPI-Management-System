@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { Pie, Line } from "react-chartjs-2";
 import "chart.js/auto";
 
-/** เกณฑ์สถานะจาก % Target (ใหม่) */
+
 function computeStatus(actual, target) {
   const a = Number(actual) || 0;
   const t = Number(target);
@@ -16,9 +16,9 @@ function computeStatus(actual, target) {
 
 const STATUS_LABELS = ["On Track", "At Risk", "Off Track"];
 const STATUS_COLORS = {
-  "On Track": "#3b82f6", // ฟ้า
-  "At Risk":  "#f59e0b", // ส้ม
-  "Off Track":"#ef4444", // แดง
+  "On Track": "#3b82f6", 
+  "At Risk":  "#f59e0b", 
+  "Off Track":"#ef4444", 
 };
 
 function buildStatusCounts(items = []) {
@@ -31,7 +31,7 @@ function buildStatusCounts(items = []) {
 }
 
 function buildMonthlyCounts(items = []) {
-  const m = new Map(); // key: YYYY-MM -> count
+  const m = new Map(); 
   items.forEach((k) => {
     const raw = k.startDate || k.createdAt || k.updatedAt;
     if (!raw) return;
@@ -47,18 +47,18 @@ function buildMonthlyCounts(items = []) {
 export default function KPICharts({ items = [], activeStatus = "All" }) {
   const counts = useMemo(() => buildStatusCounts(items), [items]);
 
-  // ------- PIE (ไม่ทำให้สีอื่นเป็นเทาแล้ว) -------
+  
   const pieData = useMemo(() => {
     const labels = STATUS_LABELS;
     const data = labels.map((l) => counts[l]);
-    const bg = labels.map((l) => STATUS_COLORS[l]); // <— เปลี่ยนแค่บรรทัดนี้
+    const bg = labels.map((l) => STATUS_COLORS[l]); 
     return {
       labels,
       datasets: [{ data, backgroundColor: bg, borderColor: bg, borderWidth: 1 }],
     };
   }, [counts]);
 
-  // ------- LINE (คงเดิม: ใช้สีของสถานะที่เลือก ถ้า All ใช้ฟ้า) -------
+  
   const month = useMemo(() => buildMonthlyCounts(items), [items]);
   const lineColor = activeStatus === "All" ? "#3b82f6" : STATUS_COLORS[activeStatus];
 
