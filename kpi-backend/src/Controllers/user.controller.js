@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import Role from "../models/Role.js";
 
-/** Helper: หา/สร้าง role จากชื่อ (string) */
+
 async function upsertRoleByName(roleInput) {
   const roleName =
     typeof roleInput === "string"
@@ -17,7 +17,7 @@ async function upsertRoleByName(roleInput) {
   return roleDoc;
 }
 
-/** Helper: ตอบกลับ user object ที่ flatten role เป็นชื่อ */
+
 function toUserDTO(u, roleNameFallback = "user") {
   const roleName =
     (u.role && (u.role.name || u.role)) || roleNameFallback;
@@ -53,7 +53,7 @@ export const getUser = async (req, res) => {
   }
 };
 
-// ✅ Admin create user
+// Admin create user
 export const createUser = async (req, res) => {
   try {
     const { username, email, password, role = "user", name } = req.body;
@@ -92,7 +92,7 @@ export const createUser = async (req, res) => {
   }
 };
 
-// ✅ Update user (แก้ไขไม่ให้ error ถ้า password ว่าง)
+
 export const updateUser = async (req, res) => {
   try {
     const { username, email, role, password, name } = req.body;
@@ -124,12 +124,12 @@ export const updateUser = async (req, res) => {
       u.username = username.trim();
     }
 
-    // name (optional)
+    
     if (name !== undefined) {
       u.name = name?.trim() || "";
     }
 
-    // role
+    
     if (role) {
       const roleDoc = await upsertRoleByName(role);
       u.role = roleDoc._id;

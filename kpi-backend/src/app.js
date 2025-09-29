@@ -27,7 +27,7 @@ const swaggerOptions = {
     servers: [{ url: BASE_URL, description: "Current server" }],
       components: {
       securitySchemes: {
-        bearerAuth: {           // << ประกาศที่นี่
+        bearerAuth: {           
           type: "http",
           scheme: "bearer",
           bearerFormat: "JWT",
@@ -37,7 +37,7 @@ const swaggerOptions = {
     security: [{ bearerAuth: [] }],
   },
   
-  // ปรับ path ให้ตรงกับโครงของคุณ
+ 
   apis: ["./src/routes/**/*.js", "./src/models/**/*.js"],
 };
 
@@ -46,10 +46,10 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get("/openapi.json", (_req, res) => res.json(swaggerSpec));
 // ===== End Swagger =====
 
-// Health
+
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
-// Routes (รวมอัตโนมัติจากไฟล์ *.routes.js)
+
 app.use(routes);
 
 export default app;

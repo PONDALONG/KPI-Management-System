@@ -17,7 +17,7 @@ export const register = async (req, res) => {
       (await Role.findOne({ name: role })) || (await Role.create({ name: role }));
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // ✅ เก็บ name ถ้ามี, ถ้าไม่มี fallback เป็น username
+    
     const displayName = (name && name.trim()) || username;
 
     const user = await User.create({
@@ -61,7 +61,7 @@ export const login = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        name: user.name, // ✅ ส่ง name กลับไปด้วย
+        name: user.name,
         email: user.email,
         role: user.role?.name || "user",
       },
