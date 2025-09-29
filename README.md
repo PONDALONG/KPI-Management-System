@@ -108,7 +108,7 @@ KPI-APP/
 │
 │── screenshots/                 # Screenshots สำหรับ README
 │── .gitignore
-│── README.md
+└──  README.md
 
 ```
 
@@ -133,7 +133,11 @@ MAIL_USER=you@example.com
 MAIL_PASS=yourpass
 MAIL_FROM="KPI App <you@example.com>"
 ```
-
+### Clone the repository
+```bash
+git clone https://github.com/PONDALONG/KPI-Management-System.git
+```
+---
 ###  Run
 
 ```bash
@@ -238,9 +242,15 @@ const kpiUpdateSchema = new mongoose.Schema(
 ###  Environment Variables (`kpi-frontend/.env`)
 
 ```env
+
 REACT_APP_API=http://localhost:5000/api
 ```
-
+---
+### Clone the repository
+```bash
+git clone https://github.com/PONDALONG/KPI-Management-System.git
+```
+---
 ###  Run
 
 ```bash
