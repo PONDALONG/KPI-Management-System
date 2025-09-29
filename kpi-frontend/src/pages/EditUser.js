@@ -8,7 +8,7 @@ export default function EditUser({ user, form, setForm, onSave, onCancel }) {
       <div className="card" style={modalStyle}>
         <h3 style={{ marginTop: 0, marginBottom: 8 }}>แก้ไขผู้ใช้</h3>
         <form onSubmit={onSave} style={{ display: "grid", gap: 10 }}>
-          {/* ✅ Username (ใหม่) */}
+         
           <Field label="Username">
             <input
               className="input"

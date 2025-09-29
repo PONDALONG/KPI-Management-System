@@ -1,11 +1,11 @@
-// components/KPITableLite.js
+
 import React from "react";
 import StatusBadge from "./StatusBadge";
 import Papa from "papaparse";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-/* ---------------- Utils ---------------- */
+
 function fmt(dateStr) {
   if (!dateStr) return "-";
   try {
@@ -32,7 +32,7 @@ function assignedLabel(au) {
   return au.name || au.username || au.email || "-";
 }
 
-/* ✅ คำนวณสถานะจาก % ของ Target (ใหม่) */
+
 function computeStatus(actual, target) {
   const a = Number(actual) || 0;
   const t = Number(target);
@@ -45,7 +45,7 @@ function computeStatus(actual, target) {
   return "On Track";                   // ≥70%
 }
 
-// ArrayBuffer → base64 (ใช้ฝังฟอนต์ไทยใน jsPDF)
+
 function arrayBufferToBase64(buf) {
   let binary = "";
   const bytes = new Uint8Array(buf);
@@ -53,7 +53,7 @@ function arrayBufferToBase64(buf) {
   return btoa(binary);
 }
 
-/** โหลดฟอนต์ไทย Sarabun (มี fallback เป็น helvetica) */
+
 async function ensureThaiFont(doc) {
   try {
     const resReg = await fetch("/fonts/Sarabun-Regular.ttf?v=1");
@@ -84,7 +84,7 @@ async function ensureThaiFont(doc) {
   }
 }
 
-/* --------------- Component --------------- */
+
 export default function KPITableLite({
   items,
   page,
@@ -104,7 +104,7 @@ export default function KPITableLite({
 }) {
   const isAdmin = !!showEditDelete;
 
-  // === Export ===
+  
   const exportCSV = () => {
     const rows = items.map((k, i) => {
       const statusCalc = computeStatus(k.actualValue, k.targetValue);
@@ -121,7 +121,7 @@ export default function KPITableLite({
           EndDate: String(fmt(k.endDate)),
         };
       }
-      // user view
+      
       return {
         ...base,
         TargetValue: fmtNum(k.targetValue),
@@ -199,11 +199,11 @@ export default function KPITableLite({
               <th>Title</th>
               <th>Status</th>
 
-              {/* admin columns */}
+             
               {isAdmin && <th>Assigned User</th>}
               {isAdmin && <th>Start Date</th>}
 
-              {/* user columns */}
+             
               {!isAdmin && <th>Target Value</th>}
               {!isAdmin && <th>Actual Value</th>}
 

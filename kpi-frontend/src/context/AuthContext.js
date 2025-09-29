@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import api from "../api/axios"; // 👈 ปรับ path ให้ตรงกับที่คุณเก็บไฟล์ axios.js
+import api from "../api/axios"; 
 
 const AuthContext = createContext();
 
@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  // ✅ ฟังก์ชัน register ใช้ axios instance
+  
   async function register(payload) {
     const { data } = await api.post("/auth/register", payload);
     return data;
@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
         token,
         isAdmin,
         loading,
-        register, // ✅ export register ให้ใช้งานจาก useAuth()
+        register, 
         login,
         logout,
       }}

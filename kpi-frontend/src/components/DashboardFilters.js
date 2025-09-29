@@ -1,4 +1,3 @@
-// components/DashboardFilters.js
 import React from "react";
 
 const STATUS = [
@@ -8,7 +7,6 @@ const STATUS = [
 ];
 
 // แปลงค่าให้เป็น string เสมอ ป้องกัน compare พลาด
-const uid = (v) => String(v ?? "");
 
 export default function DashboardFilters({
   status = "",
@@ -32,11 +30,9 @@ export default function DashboardFilters({
           alignItems: "center",
         }}
       >
-        {/* สถานะ */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ fontWeight: 700 }}>สถานะ:</div>
 
-          {/* All */}
           <button
             type="button"
             aria-pressed={status === ""}
@@ -46,7 +42,6 @@ export default function DashboardFilters({
             All
           </button>
 
-          {/* Pills: On/At/Off */}
           {STATUS.map(({ label, value }) => (
             <button
               key={value}
@@ -60,10 +55,8 @@ export default function DashboardFilters({
           ))}
         </div>
 
-        {/* เว้นช่องว่างดัน dropdown ไปขวา */}
         <div style={{ flex: 1 }} />
 
-        {/* เลือกพนักงาน */}
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div className="label" style={{ minWidth: 96 }}>
             เลือกพนักงาน
@@ -86,7 +79,6 @@ export default function DashboardFilters({
             })}
           </select>
 
-          {/* ปุ่มล้างตัวกรอง (แสดงเฉพาะเมื่อมีตัวกรอง) */}
           {(status || userId) && (
             <button type="button" className="btn small" onClick={handleReset}>
               รีเซ็ต

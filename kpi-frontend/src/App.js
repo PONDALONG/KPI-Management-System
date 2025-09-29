@@ -5,8 +5,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import UsersAdmin from "./pages/UsersAdmin";
-import KPIForm from "./pages/KPIForm";     // << เพิ่ม
-import KPIList from "./pages/KPIList";     // << เพิ่ม
+import KPIForm from "./pages/KPIForm";
+import KPIList from "./pages/KPIList";
 import AppLayout from "./components/AppLayout";
 import "./styles/kpi.css";
 
@@ -48,7 +48,7 @@ export default function App() {
             }
           />
 
-          {/* Create KPI (รองรับทั้ง /kpiform และ /kpis/new) */}
+          {/* Create KPI */}
           <Route
             path="/kpiform"
             element={
@@ -117,4 +117,3 @@ function RequireAdmin({ children }) {
   if (loading) return <div>Loading…</div>;
   return user && isAdmin ? children : <Navigate to="/dashboard" replace />;
 }
-

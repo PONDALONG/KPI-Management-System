@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, useLocation, useParams } from "react-router-dom"; // ✅ เพิ่ม
+import { useNavigate, useLocation, useParams } from "react-router-dom"; 
 
 const STATUSES = ["On Track", "At Risk", "Off Track"];
 
@@ -10,14 +10,14 @@ export default function KPIForm({ editing }) {
   const { isAdmin, user } = useAuth();
   const navigate = useNavigate();
 
-  // ✅ รับค่าเดิมจาก Dashboard (ถ้ากด Edit มาจากตาราง)
+  
   const { state } = useLocation();
   const passedKpi = state?.kpi || null;
 
-  // ✅ เผื่อรีเฟรชหน้า / เปิดลิงก์ตรง ให้มี id สำหรับ fetch
+  
   const { id } = useParams();
 
-  // ✅ ใช้ editingData เป็น "แหล่งความจริง": รับจาก props หรือจาก location.state
+  
   const editingData = editing || passedKpi || null;
 
   const [form, setForm] = useState(
@@ -51,7 +51,7 @@ export default function KPIForm({ editing }) {
     };
   }, []);
 
-  // ✅ ตั้งค่าเริ่มต้นจาก editingData (กรณีกดมาจาก Dashboard)
+ 
   useEffect(() => {
     if (!editingData) return;
     setForm((prev) => {
@@ -72,7 +72,7 @@ export default function KPIForm({ editing }) {
     });
   }, [editingData]);
 
-  // ✅ ถ้าเป็นโหมดแก้ไขแต่ไม่มี editingData (เช่นรีเฟรชหน้า) → ดึงจาก API ด้วย id
+  
   useEffect(() => {
     const loadIfNeeded = async () => {
       if (!id || editingData) return;
@@ -92,7 +92,7 @@ export default function KPIForm({ editing }) {
           endDate: data.endDate ? data.endDate.slice(0, 10) : "",
         });
       } catch (e) {
-        // เปิดหน้าตรงแล้วหาไม่เจอ ก็กลับ dashboard
+        
         navigate("/dashboard");
       }
     };
@@ -139,7 +139,7 @@ export default function KPIForm({ editing }) {
 
     try {
       if (editingData?._id || id) {
-        // ✅ ใช้ id จาก editingData ก่อน ถ้าไม่มีค่อยใช้ id จาก URL
+        
         const kpiId = editingData?._id || id;
         await api.put(`/kpis/${kpiId}`, payload);
         alert("✅ KPI updated successfully");
@@ -167,8 +167,7 @@ export default function KPIForm({ editing }) {
       <h2 className="h2">{editingData || id ? "Edit KPI" : "Create KPI"}</h2>
 
       <form onSubmit={submit} className="row two">
-        {/* ...ฟิลด์เดิมทั้งหมดคงเดิม... */}
-        {/* Title */}
+       
         <Field label="Title*">
           <input
             className="input"

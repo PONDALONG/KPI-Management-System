@@ -1,4 +1,3 @@
-// components/QuickStats.js
 import React, { useMemo } from "react";
 
 export default function QuickStats({ items }) {

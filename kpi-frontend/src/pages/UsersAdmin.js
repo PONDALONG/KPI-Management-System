@@ -78,7 +78,7 @@ export default function UsersAdmin() {
     if (!payload.password) {
       delete payload.password;
     }
-    await api.put(`/users/${editing.id}`, payload); // ✅ ใช้ id แทน _id
+    await api.put(`/users/${editing.id}`, payload);
     alert("อัปเดตผู้ใช้สำเร็จ");
     closeEdit();
     load();
@@ -89,7 +89,9 @@ export default function UsersAdmin() {
     if (!k) return users;
     return users.filter((u) =>
       [u.username, u.name, u.email, u.role].some((v) =>
-        String(v || "").toLowerCase().includes(k)
+        String(v || "")
+          .toLowerCase()
+          .includes(k)
       )
     );
   }, [users, keyword]);
@@ -216,13 +218,15 @@ export default function UsersAdmin() {
                     </td>
                     <td>
                       <div style={{ display: "flex", gap: 8 }}>
-                        <button style={{ color: "#d6b51fff" }}
+                        <button
+                          style={{ color: "#d6b51fff" }}
                           className="btn small"
                           onClick={() => openEdit(u)}
                         >
                           Edit
                         </button>
-                        <button style={{ color: "#d40d0dff" }}
+                        <button
+                          style={{ color: "#d40d0dff" }}
                           className="btn small"
                           onClick={() => remove(u.id)}
                         >

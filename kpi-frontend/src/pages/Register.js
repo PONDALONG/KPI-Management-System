@@ -13,7 +13,10 @@ export default function Register() {
   const { register } = useAuth();
   const nav = useNavigate();
 
-  const emailValid = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), [email]);
+  const emailValid = useMemo(
+    () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
+    [email]
+  );
   const usernameValid = useMemo(() => username.trim().length >= 3, [username]);
 
   const submit = async (e) => {
@@ -29,15 +32,26 @@ export default function Register() {
 
     try {
       setSubmitting(true);
-      await register({ username: username.trim(), email: email.trim(), password, name: username.trim() });
+      await register({
+        username: username.trim(),
+        email: email.trim(),
+        password,
+        name: username.trim(),
+      });
       alert("สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ");
       nav("/login");
     } catch (err) {
-      const msg = err?.response?.data?.message || err?.message || "Register failed";
-      if (msg.toLowerCase().includes("exists") || String(err?.response?.status) === "409") {
+      const msg =
+        err?.response?.data?.message || err?.message || "Register failed";
+      if (
+        msg.toLowerCase().includes("exists") ||
+        String(err?.response?.status) === "409"
+      ) {
         setErrors({ form: "อีเมลหรือชื่อผู้ใช้นี้ถูกใช้แล้ว" });
       } else if (String(err?.response?.status) === "404") {
-        setErrors({ form: "ติดต่อเซิร์ฟเวอร์ไม่ถูกต้อง (404). โปรดตรวจพอร์ต/Proxy ไปยัง backend" });
+        setErrors({
+          form: "ติดต่อเซิร์ฟเวอร์ไม่ถูกต้อง (404). โปรดตรวจพอร์ต/Proxy ไปยัง backend",
+        });
       } else {
         setErrors({ form: msg });
       }
@@ -68,7 +82,11 @@ export default function Register() {
             />
           </Field>
 
-          <Field label="ชื่อผู้ใช้" hint="อย่างน้อย 3 ตัวอักษร (a–z, 0–9, _)" error={errors.username}>
+          <Field
+            label="ชื่อผู้ใช้"
+            hint="อย่างน้อย 3 ตัวอักษร (a–z, 0–9, _)"
+            error={errors.username}
+          >
             <input
               className={`input${errors.username ? " is-error" : ""}`}
               value={username}
@@ -91,7 +109,11 @@ export default function Register() {
                 autoComplete="new-password"
                 required
               />
-              <button type="button" className="btn-toggle" onClick={() => setShowPw((s) => !s)}>
+              <button
+                type="button"
+                className="btn-toggle"
+                onClick={() => setShowPw((s) => !s)}
+              >
                 {showPw ? "Hide" : "Show"}
               </button>
             </div>

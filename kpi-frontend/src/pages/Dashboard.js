@@ -1,4 +1,3 @@
-// pages/Dashboard.js
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
@@ -8,11 +7,6 @@ import KPITableLite from "../components/KPITableLite";
 import QuickStats from "../components/QuickStats";
 import { useAuth } from "../context/AuthContext";
 
-/* ==== คำนวณสถานะจาก % ของ Target (เกณฑ์ใหม่) ====
-   Off Track = ≤ 15%
-   At Risk   = 16–69%
-   On Track  = ≥ 70%
-*/
 function computeStatus(actual, target) {
   const a = Number(actual) || 0;
   const t = Number(target);
@@ -29,7 +23,6 @@ function computeStatus(actual, target) {
   return "On Track"; // ≥70%
 }
 
-// --- helpers ---
 const uid = (v) => String(v ?? "");
 
 // สำหรับแปลง updatedBy -> ชื่อจริง
@@ -197,65 +190,69 @@ export default function Dashboard() {
     }
   };
 
-  // ส่งอัปเดต (user) — แก้เฉพาะจุดที่ผิด: ตัด PATCH/PUT ที่ทำให้ 404 ออก
- // ส่งอัปเดต (user) — เพิ่ม PUT /kpis/:id เพื่อให้อัปเดต Actual จริง
-const submitUpdate = async (e) => {
-  e.preventDefault();
-  if (!editingKpi) return;
+  // ส่งอัปเดต (user) — เพิ่ม PUT /kpis/:id เพื่อให้อัปเดต Actual จริง
+  const submitUpdate = async (e) => {
+    e.preventDefault();
+    if (!editingKpi) return;
 
-  const kpiId = uid(editingKpi._id || editingKpi.id);
-  const delta = Number(updatedValue);
-  if (!Number.isFinite(delta)) {
-    alert("กรุณากรอก Updated Value เป็นตัวเลข");
-    return;
-  }
-
-  try {
-    // 1) บันทึกบรรทัด update (ฝั่ง backend จะเก็บประวัติ)
-    await api.post(`/kpi-update/${kpiId}/updates`, {
-      updatedValue: delta,
-      comment: comment?.trim() || "",
-    });
-
-    // 2) คำนวณค่าใหม่จากของเดิมใน state (ไม่เรียก GET /kpis/:id)
-    const latest = editingKpi;
-    const currentActual = Number(latest.actualValue) || 0;
-    const target = Number(latest.targetValue) || 0;
-    const newActual = currentActual + delta;
-    const newStatus = computeStatus(newActual, target);
-
-    // 3) อัปเดต KPI หลักด้วย PUT (หลีกเลี่ยง PATCH ที่เคย 404)
-    const payload = {
-      ...latest,
-      actualValue: newActual,
-      status: newStatus,
-      // บาง backend ต้องการ assignedUser เป็น id string
-      assignedUser:
-        typeof latest.assignedUser === "object"
-          ? (latest.assignedUser?._id || latest.assignedUser?.id || latest.assignedUser)
-          : latest.assignedUser,
-    };
-    await api.put(`/kpis/${kpiId}`, payload);
-
-    // 4) อัปเดต UI + ปิดฟอร์ม
-    setKpis((prev) =>
-      prev.map((k) =>
-        uid(k._id || k.id) === kpiId ? { ...k, actualValue: newActual, status: newStatus } : k
-      )
-    );
-    onSelectForUpdate(null);
-
-    // 5) reload เพื่อความชัวร์ และรีโหลดแผง updates ถ้ากำลังเปิดของ KPI นี้อยู่
-    await load();
-    if (isAdminFlag && adminViewKpi && uid(adminViewKpi._id || adminViewKpi.id) === kpiId) {
-      await fetchUpdatesForAdmin(adminViewKpi);
+    const kpiId = uid(editingKpi._id || editingKpi.id);
+    const delta = Number(updatedValue);
+    if (!Number.isFinite(delta)) {
+      alert("กรุณากรอก Updated Value เป็นตัวเลข");
+      return;
     }
-  } catch (err) {
-    console.error("Update KPI failed:", err);
-    alert(err?.response?.data?.message || "อัปเดตไม่สำเร็จ");
-  }
-};
 
+    try {
+      // บันทึกบรรทัด update (ฝั่ง backend จะเก็บประวัติ)
+      await api.post(`/kpi-update/${kpiId}/updates`, {
+        updatedValue: delta,
+        comment: comment?.trim() || "",
+      });
+
+      // คำนวณค่าใหม่จากของเดิมใน state (ไม่เรียก GET /kpis/:id)
+      const latest = editingKpi;
+      const currentActual = Number(latest.actualValue) || 0;
+      const target = Number(latest.targetValue) || 0;
+      const newActual = currentActual + delta;
+      const newStatus = computeStatus(newActual, target);
+
+      const payload = {
+        ...latest,
+        actualValue: newActual,
+        status: newStatus,
+
+        assignedUser:
+          typeof latest.assignedUser === "object"
+            ? latest.assignedUser?._id ||
+              latest.assignedUser?.id ||
+              latest.assignedUser
+            : latest.assignedUser,
+      };
+      await api.put(`/kpis/${kpiId}`, payload);
+
+      setKpis((prev) =>
+        prev.map((k) =>
+          uid(k._id || k.id) === kpiId
+            ? { ...k, actualValue: newActual, status: newStatus }
+            : k
+        )
+      );
+      onSelectForUpdate(null);
+
+      // 5) reload เพื่อความชัวร์ และรีโหลดแผง updates ถ้ากำลังเปิดของ KPI นี้อยู่
+      await load();
+      if (
+        isAdminFlag &&
+        adminViewKpi &&
+        uid(adminViewKpi._id || adminViewKpi.id) === kpiId
+      ) {
+        await fetchUpdatesForAdmin(adminViewKpi);
+      }
+    } catch (err) {
+      console.error("Update KPI failed:", err);
+      alert(err?.response?.data?.message || "อัปเดตไม่สำเร็จ");
+    }
+  };
 
   // เปิด/โหลด Updates (admin)
   const onViewUpdates = async (kpiItem) => {
@@ -267,7 +264,6 @@ const submitUpdate = async (e) => {
     const kpiId = uid(kpiItem._id || kpiItem.id);
     setLoadingUpdates(true);
     try {
-      // const { data } = await api.get(`/kpis/${kpiId}/updates`);
       const { data } = await api.get(`/kpi-update/${kpiId}/updates`);
       setAdminUpdates(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -358,7 +354,6 @@ const submitUpdate = async (e) => {
         onDelete={isAdminFlag ? onDeleteKpi : undefined}
       />
 
-      {/* ฟอร์มอัปเดต (user เท่านั้น) */}
       {!isAdminFlag && editingKpi && (
         <form
           onSubmit={submitUpdate}
@@ -410,7 +405,6 @@ const submitUpdate = async (e) => {
         </form>
       )}
 
-      {/* แผง Updates (admin เท่านั้น) — ไม่มีคอลัมน์ Action และ By ใช้ name */}
       {isAdminFlag && adminViewKpi && (
         <div className="card" style={{ marginTop: 16 }}>
           <div
@@ -460,7 +454,7 @@ const submitUpdate = async (e) => {
                       <td>{i + 1}</td>
                       <td>{Number(u.updatedValue).toFixed(2)}</td>
                       <td>{u.comment || "-"}</td>
-                      {/* ✅ แสดงชื่อจริงของผู้ใช้ */}
+                      {/*แสดงชื่อจริงของผู้ใช้ */}
                       <td>{resolveUserName(u.updatedBy, userMap)}</td>
                       <td>
                         {new Date(u.updatedAt || u.createdAt).toLocaleString(
